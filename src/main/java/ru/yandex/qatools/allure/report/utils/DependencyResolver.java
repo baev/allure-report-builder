@@ -32,12 +32,8 @@ public class DependencyResolver {
     private File localRepository;
 
     public DependencyResolver(File localRepository) {
-        this.remoteRepositories = new ArrayList<RemoteRepository>();
+        this.remoteRepositories = new ArrayList<>();
         this.localRepository = localRepository;
-    }
-
-    public void setLocalRepository(File file) {
-        this.localRepository = file;
     }
 
     public void addRemoteRepository(String url) {
