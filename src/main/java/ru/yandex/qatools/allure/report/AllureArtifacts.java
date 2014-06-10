@@ -20,15 +20,15 @@ public class AllureArtifacts {
 
     public static final String JAR = "jar";
 
-    public static DefaultArtifact getAllureReportDataArtifact(String version) {
+    public static DefaultArtifact getReportDataArtifact(String version) {
         return new DefaultArtifact(ALLURE_GROUP_ID, ALLURE_REPORT_DATA_ARTIFACT_ID, JAR, version);
     }
 
-    public static DefaultArtifact getAllureReportCommonsArtifact(String version) {
+    public static DefaultArtifact getReportCommonsArtifact(String version) {
         return new DefaultArtifact(ALLURE_GROUP_ID, ALLURE_REPORT_COMMONS_ARTIFACT_ID, JAR, version);
     }
 
-    public static DefaultArtifact getAllureReportFaceArtifact(String version) {
+    public static DefaultArtifact getReportFaceArtifact(String version) {
         return new DefaultArtifact(ALLURE_GROUP_ID, ALLURE_REPORT_FACE_ARTIFACT_ID, WAR, version);
     }
 

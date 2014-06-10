@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:test-suite xmlns:ns2="urn:model.allure.qatools.yandex.ru" start="1402407927696" stop="1402407928459">
+    <name>my.company.tests.TheoryTest</name>
+    <test-cases>
+        <test-case start="1402407927696" stop="1402407927721" status="passed">
+            <name>usernameNotContainsSlash</name>
+            <steps>
+                <step start="1402407927710" stop="1402407927720" status="passed">
+                    <name>checkUserName</name>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start="1402407927721" stop="1402407927721" status="passed">
+                    <name>checkUserName</name>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <labels/>
+        </test-case>
+    </test-cases>
+    <labels/>
+</ns2:test-suite>

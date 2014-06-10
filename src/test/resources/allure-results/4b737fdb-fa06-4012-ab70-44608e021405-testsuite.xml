@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:test-suite xmlns:ns2="urn:model.allure.qatools.yandex.ru" start="1402407917815" stop="1402407928505">
+    <name>my.company.tests.SearchTest</name>
+    <test-cases>
+        <test-case start="1402407917833" stop="1402407927567" status="passed">
+            <name>searchTest</name>
+            <steps>
+                <step start="1402407924217" stop="1402407925178" status="passed">
+                    <name>openMainPage</name>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start="1402407925179" stop="1402407925416" status="passed">
+                    <name>search</name>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments>
+                <attachment title="makeScreenshot" source="1c15209e967b1f75e604cbbfa60412f04f1d03106397bfe676211583cf9b1ca3-attachment.png" type="image/png" size="206490"/>
+            </attachments>
+            <labels/>
+        </test-case>
+    </test-cases>
+    <labels/>
+</ns2:test-suite>

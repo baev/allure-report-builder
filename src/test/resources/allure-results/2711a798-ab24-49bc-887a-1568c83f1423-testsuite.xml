@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:test-suite xmlns:ns2="urn:model.allure.qatools.yandex.ru" start="1402407927582" stop="1402407927728">
+    <name>my.company.tests.SimpleTest</name>
+    <test-cases>
+        <test-case start="1402407927582" stop="1402407927654" status="passed">
+            <name>simpleTestWithSteps</name>
+            <steps>
+                <step start="1402407927582" stop="1402407927654" status="passed">
+                    <name>checkThat2is2</name>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <labels/>
+        </test-case>
+        <test-case start="1402407927660" stop="1402407927660" status="passed">
+            <name>simpleTest</name>
+            <steps/>
+            <attachments/>
+            <labels/>
+        </test-case>
+        <test-case start="1402407927667" stop="1402407927677" status="passed">
+            <name>simpleTestWithAttachments</name>
+            <steps/>
+            <attachments>
+                <attachment title="makeAttach" source="34895d3bafeba2cdb8c2764e22b69b1726b5649931fa6a7affc391e835534db-attachment.txt" type="text/plain" size="12"/>
+            </attachments>
+            <labels/>
+        </test-case>
+    </test-cases>
+    <labels/>
+</ns2:test-suite>
