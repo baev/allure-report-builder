@@ -112,7 +112,7 @@ public class AllureReportBuilder {
 
         return new URLClassLoader(
                 urls.toArray(new URL[urls.size()]),
-                Thread.currentThread().getContextClassLoader()
+                AllureReportBuilder.class.getClassLoader()
         );
     }
 
