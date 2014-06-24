@@ -21,7 +21,7 @@
         <compiler.version>1.7</compiler.version>
         <aetherVersion>0.9.0.M2</aetherVersion>
         <mavenVersion>3.1.0</mavenVersion>
-        <wagonVersion>1.0</wagonVersion>
+        <wagonVersion>2.6</wagonVersion>
     </properties>
 
     <organization>
@@ -74,12 +74,6 @@
     </prerequisites>
 
     <dependencies>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
-
         <!-- COMMONS -->
         <dependency>
             <groupId>commons-io</groupId>
@@ -87,31 +81,17 @@
             <version>2.4</version>
         </dependency>
 
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.8.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-
         <!-- AETHER -->
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-impl</artifactId>
+            <version>${aetherVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-spi</artifactId>
+            <version>${aetherVersion}</version>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-connector-file</artifactId>
@@ -119,7 +99,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-connector-asynchttpclient</artifactId>
+            <artifactId>aether-api</artifactId>
             <version>${aetherVersion}</version>
         </dependency>
         <dependency>
@@ -134,7 +114,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-ssh</artifactId>
+            <artifactId>wagon-provider-api</artifactId>
             <version>${wagonVersion}</version>
         </dependency>
         <dependency>
@@ -147,16 +127,17 @@
             <artifactId>wagon-http</artifactId>
             <version>${wagonVersion}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-http-lightweight</artifactId>
-            <version>${wagonVersion}</version>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
