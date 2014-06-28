@@ -12,8 +12,8 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.yandex.qatools.allure.report.AllureArtifacts.getReportCommonsArtifact;
-import static ru.yandex.qatools.allure.report.utils.AetherObjectFactory.newResolver;
+import static ru.yandex.qatools.allure.report.AllureArtifacts.getReportDataArtifact;
+import static ru.yandex.qatools.allure.report.utils.AetherObjectFactory.newDependencyResolver;
 import static ru.yandex.qatools.allure.report.utils.JarUtils.unpackJar;
 import static ru.yandex.qatools.allure.report.utils.RegexJarEntryFilter.filterByRegex;
 
@@ -25,13 +25,13 @@ import static ru.yandex.qatools.allure.report.utils.RegexJarEntryFilter.filterBy
  */
 public class AllureReportBuilder {
 
-    private static final String ALLURE_REPORT_GENERATOR_CLASS = "ru.yandex.qatools.allure.data.AllureReportGenerator";
+    public static final String ALLURE_REPORT_GENERATOR_CLASS = "ru.yandex.qatools.allure.data.AllureReportGenerator";
 
-    private static final String ALLURE_REPORT_FACE_FILE_REGEX = "^((?!(META\\-INF|WEB-INF)).)*$";
+    public static final String ALLURE_REPORT_FACE_FILE_REGEX = "^((?!(META\\-INF|WEB-INF)).)*$";
 
-    private static final String METHOD_NAME = "generate";
+    public static final String METHOD_NAME = "generate";
 
-    private final String version;
+    private String version;
 
     private File outputDirectory;
 
@@ -64,7 +64,24 @@ public class AllureReportBuilder {
      * @throws AllureReportBuilderException if specified <code>outputDirectory</code> doesn't exists and can't be created
      */
     public AllureReportBuilder(String version, File outputDirectory) throws AllureReportBuilderException {
-        this(version, outputDirectory, newResolver());
+        this(version, outputDirectory, newDependencyResolver());
+    }
+
+
+    /**
+     * Set allure version for report generation
+     * @param version allure version in maven format
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+     * Get allure version for report generation
+     * @return allure version
+     */
+    public String getVersion() {
+        return this.version;
     }
 
     /**
@@ -72,7 +89,7 @@ public class AllureReportBuilder {
      *
      * @param inputDirectories a directories with test results
      * @throws AllureReportBuilderException if one of given directories doesn't exists and can't be created
-     * @throws AllureReportBuilderException if can't resolve {@link AllureArtifacts#getReportCommonsArtifact(String)}
+     * @throws AllureReportBuilderException if can't resolve {@link AllureArtifacts#getReportDataArtifact(String)} (String)}
      *                                      using {@link #resolver}
      * @throws AllureReportBuilderException if resolved DependencyResult contains artifact with invalid path.
      * @throws AllureReportBuilderException if can't find class {@link #ALLURE_REPORT_GENERATOR_CLASS} in classpath
@@ -85,7 +102,7 @@ public class AllureReportBuilder {
         try {
             checkDirectories(inputDirectories);
 
-            DefaultArtifact artifact = getReportCommonsArtifact(version);
+            DefaultArtifact artifact = getReportDataArtifact(version);
             DependencyResult dependencyResult = resolver.resolve(artifact);
             URLClassLoader urlClassLoader = createClassLoader(dependencyResult);
 
@@ -95,25 +112,6 @@ public class AllureReportBuilder {
         } catch (Exception e) {
             throw new AllureReportBuilderException(e);
         }
-    }
-
-    /**
-     * Create a {@link URLClassLoader} for specified {@link DependencyResult}.
-     *
-     * @param dependencyResult a DependencyResult which contains extra classpath for class loader.
-     * @return created URLClassLoader
-     * @throws MalformedURLException if DependencyResult contains artifact with invalid path.
-     */
-    private URLClassLoader createClassLoader(DependencyResult dependencyResult) throws MalformedURLException {
-        List<URL> urls = new ArrayList<>();
-        for (ArtifactResult artRes : dependencyResult.getArtifactResults()) {
-            urls.add(artRes.getArtifact().getFile().toURI().toURL());
-        }
-
-        return new URLClassLoader(
-                urls.toArray(new URL[urls.size()]),
-                ClassLoader.getSystemClassLoader().getParent()
-        );
     }
 
     /**
@@ -161,4 +159,24 @@ public class AllureReportBuilder {
             throw new AllureReportBuilderException("Report directory doesn't exists and can't be created.");
         }
     }
+
+    /**
+     * Create a {@link URLClassLoader} for specified {@link DependencyResult}.
+     *
+     * @param dependencyResult a DependencyResult which contains extra classpath for class loader.
+     * @return created URLClassLoader
+     * @throws MalformedURLException if DependencyResult contains artifact with invalid path.
+     */
+    private URLClassLoader createClassLoader(DependencyResult dependencyResult) throws MalformedURLException {
+        List<URL> urls = new ArrayList<>();
+        for (ArtifactResult artRes : dependencyResult.getArtifactResults()) {
+            urls.add(artRes.getArtifact().getFile().toURI().toURL());
+        }
+
+        return new URLClassLoader(
+                urls.toArray(new URL[urls.size()]),
+                ClassLoader.getSystemClassLoader().getParent()
+        );
+    }
+
 }
