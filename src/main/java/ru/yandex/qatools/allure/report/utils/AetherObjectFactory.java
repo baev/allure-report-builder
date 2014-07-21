@@ -33,6 +33,8 @@ public class AetherObjectFactory {
     //TODO windows?
     public static File DEFAULT_LOCAL_REPOSITORY = new File(System.getProperty("user.home") + "/.m2/repository");
 
+    public static final String SONATYPE_RELEASES_URL = "https://oss.sonatype.org/content/repositories/releases/";
+
     public static final String MAVEN_CENTRAL_URL = "http://repo1.maven.org/maven2/";
 
     public static final String DEFAULT_TYPE = "default";
@@ -41,7 +43,7 @@ public class AetherObjectFactory {
     }
 
     public static DependencyResolver newDependencyResolver() {
-        return newDependencyResolver(DEFAULT_LOCAL_REPOSITORY, MAVEN_CENTRAL_URL);
+        return newDependencyResolver(DEFAULT_LOCAL_REPOSITORY, MAVEN_CENTRAL_URL, SONATYPE_RELEASES_URL);
     }
 
     public static DependencyResolver newDependencyResolver(File localRepository, String... repoUrls) {
