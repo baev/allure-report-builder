@@ -7,16 +7,17 @@ import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.connector.file.FileRepositoryConnectorFactory;
-import org.eclipse.aether.connector.wagon.WagonProvider;
-import org.eclipse.aether.connector.wagon.WagonRepositoryConnectorFactory;
+import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.impl.*;
 import org.eclipse.aether.internal.impl.*;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
+import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.spi.log.LoggerFactory;
 import org.eclipse.aether.spi.log.NullLoggerFactory;
+import org.eclipse.aether.transport.file.FileTransporterFactory;
+import org.eclipse.aether.transport.http.HttpTransporterFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,9 +57,9 @@ public class AetherObjectFactory {
         DefaultRepositorySystem repositorySystem = new DefaultRepositorySystem();
         DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
 
-        locator.addService(RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class);
-        locator.addService(RepositoryConnectorFactory.class, FileRepositoryConnectorFactory.class);
-        locator.setServices(WagonProvider.class, new ManualWagonProvider());
+        locator.addService( RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class );
+        locator.addService( TransporterFactory.class, FileTransporterFactory.class );
+        locator.addService( TransporterFactory.class, HttpTransporterFactory.class );
 
         locator.setService(LoggerFactory.class, NullLoggerFactory.class);
         locator.setService(VersionResolver.class, DefaultVersionResolver.class);
