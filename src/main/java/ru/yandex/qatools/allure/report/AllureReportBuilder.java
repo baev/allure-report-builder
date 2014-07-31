@@ -35,6 +35,8 @@ public class AllureReportBuilder {
 
     private File outputDirectory;
 
+    private ClassLoader classLoader;
+
     private DependencyResolver resolver;
 
     /**
@@ -49,9 +51,11 @@ public class AllureReportBuilder {
             throws AllureReportBuilderException {
         checkDirectory(outputDirectory);
 
-        this.version = version;
+        this.classLoader = ClassLoader.getSystemClassLoader().getParent();
         this.outputDirectory = outputDirectory;
         this.resolver = resolver;
+        this.version = version;
+
     }
 
     /**
@@ -67,9 +71,26 @@ public class AllureReportBuilder {
         this(version, outputDirectory, newDependencyResolver());
     }
 
+    /**
+     * Set class loader for resolved dependencies
+     *
+     * @param loader class loader
+     */
+    public void setClassLoader(ClassLoader loader) {
+        this.classLoader = classLoader;
+    }
+
+    /**
+     * Return class loader for resolved dependencies
+     * @return class loader
+     */
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
 
     /**
      * Set allure version for report generation
+     *
      * @param version allure version in maven format
      */
     public void setVersion(String version) {
@@ -78,6 +99,7 @@ public class AllureReportBuilder {
 
     /**
      * Get allure version for report generation
+     *
      * @return allure version
      */
     public String getVersion() {
@@ -175,7 +197,7 @@ public class AllureReportBuilder {
 
         return new URLClassLoader(
                 urls.toArray(new URL[urls.size()]),
-                ClassLoader.getSystemClassLoader().getParent()
+                getClassLoader()
         );
     }
 
