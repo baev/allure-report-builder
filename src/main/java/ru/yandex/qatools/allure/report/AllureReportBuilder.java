@@ -74,9 +74,9 @@ public class AllureReportBuilder {
     /**
      * Set class loader for resolved dependencies
      *
-     * @param loader class loader
+     * @param classLoader class loader
      */
-    public void setClassLoader(ClassLoader loader) {
+    public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
