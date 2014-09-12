@@ -1,4 +1,6 @@
-package ru.yandex.qatools.allure.report.utils;
+package ru.yandex.qatools.allure.report.internal;
+
+import ru.yandex.qatools.clay.utils.archive.JarEntryFilter;
 
 import java.util.jar.JarEntry;
 import java.util.regex.Pattern;
@@ -25,7 +27,7 @@ public class RegexJarEntryFilter implements JarEntryFilter {
         return entry.getName();
     }
 
-    public static RegexJarEntryFilter filterByRegex (String pattern) {
+    public static RegexJarEntryFilter filterByRegex(String pattern) {
         return new RegexJarEntryFilter(pattern);
     }
 }

@@ -1,21 +1,22 @@
 package ru.yandex.qatools.allure.report;
 
+import org.apache.maven.settings.Settings;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.resolution.ArtifactResult;
-import org.eclipse.aether.resolution.DependencyResult;
-import ru.yandex.qatools.allure.report.utils.DependencyResolver;
+import ru.yandex.qatools.clay.Aether;
+import ru.yandex.qatools.clay.AetherResult;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
 
+import static org.apache.commons.io.FileUtils.getTempDirectory;
 import static ru.yandex.qatools.allure.report.AllureArtifacts.getReportDataArtifact;
-import static ru.yandex.qatools.allure.report.utils.AetherObjectFactory.newDependencyResolver;
-import static ru.yandex.qatools.allure.report.utils.JarUtils.unpackJar;
-import static ru.yandex.qatools.allure.report.utils.RegexJarEntryFilter.filterByRegex;
+import static ru.yandex.qatools.allure.report.internal.RegexJarEntryFilter.filterByRegex;
+import static ru.yandex.qatools.clay.Aether.MAVEN_CENTRAL_URL;
+import static ru.yandex.qatools.clay.Aether.aether;
+import static ru.yandex.qatools.clay.maven.settings.FluentProfileBuilder.newProfile;
+import static ru.yandex.qatools.clay.maven.settings.FluentRepositoryBuilder.newRepository;
+import static ru.yandex.qatools.clay.maven.settings.FluentSettingsBuilder.newSettings;
+import static ru.yandex.qatools.clay.utils.archive.ArchiveUtil.unpackJar;
 
 /**
  * @author Artem Eroshenko eroshenkoam@yandex-team.ru
@@ -31,44 +32,32 @@ public class AllureReportBuilder {
 
     public static final String METHOD_NAME = "generate";
 
+    public static final Settings MAVEN_SETTINGS = newSettings()
+            .withActiveProfile(newProfile()
+                    .withId("profile")
+                    .withRepository(newRepository()
+                            .withUrl(MAVEN_CENTRAL_URL))).build();
+
     private String version;
 
     private File outputDirectory;
 
     private ClassLoader classLoader;
 
-    private DependencyResolver resolver;
+    private Aether aether;
 
-    /**
-     * Create {@link AllureReportBuilder} to generate Allure report with given version to specified directory.
-     * Uses to resolve allure dependencies specified {@link ru.yandex.qatools.allure.report.utils.DependencyResolver}
-     *
-     * @param version         a allure report version
-     * @param outputDirectory a directory to generate report
-     * @throws AllureReportBuilderException if specified <code>outputDirectory</code> doesn't exists and can't be created
-     */
-    public AllureReportBuilder(String version, File outputDirectory, DependencyResolver resolver)
+    public AllureReportBuilder(String version, File outputDirectory, Aether aether)
             throws AllureReportBuilderException {
         checkDirectory(outputDirectory);
 
-        this.classLoader = ClassLoader.getSystemClassLoader().getParent();
         this.outputDirectory = outputDirectory;
-        this.resolver = resolver;
+        this.aether = aether;
         this.version = version;
 
     }
 
-    /**
-     * Create {@link AllureReportBuilder} to generate Allure report with given version to specified directory.
-     *
-     * @param version         a allure report version
-     * @param outputDirectory a directory to generate report
-     * @throws AllureReportBuilderException can't create default dependency resolver
-     *                                      {@see ru.yandex.qatools.allure.report.utils.AetherObjectFactory#newResolver()}
-     * @throws AllureReportBuilderException if specified <code>outputDirectory</code> doesn't exists and can't be created
-     */
     public AllureReportBuilder(String version, File outputDirectory) throws AllureReportBuilderException {
-        this(version, outputDirectory, newDependencyResolver());
+        this(version, outputDirectory, aether(getTempDirectory(), MAVEN_SETTINGS));
     }
 
     /**
@@ -76,12 +65,14 @@ public class AllureReportBuilder {
      *
      * @param classLoader class loader
      */
+    @SuppressWarnings("unused")
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
     /**
      * Return class loader for resolved dependencies
+     *
      * @return class loader
      */
     public ClassLoader getClassLoader() {
@@ -93,6 +84,7 @@ public class AllureReportBuilder {
      *
      * @param version allure version in maven format
      */
+    @SuppressWarnings("unused")
     public void setVersion(String version) {
         this.version = version;
     }
@@ -102,6 +94,7 @@ public class AllureReportBuilder {
      *
      * @return allure version
      */
+    @SuppressWarnings("unused")
     public String getVersion() {
         return this.version;
     }
@@ -111,22 +104,21 @@ public class AllureReportBuilder {
      *
      * @param inputDirectories a directories with test results
      * @throws AllureReportBuilderException if one of given directories doesn't exists and can't be created
-     * @throws AllureReportBuilderException if can't resolve {@link AllureArtifacts#getReportDataArtifact(String)} (String)}
-     *                                      using {@link #resolver}
-     * @throws AllureReportBuilderException if resolved DependencyResult contains artifact with invalid path.
-     * @throws AllureReportBuilderException if can't find class {@link #ALLURE_REPORT_GENERATOR_CLASS} in classpath
-     * @throws AllureReportBuilderException if can't create instance of {@link #ALLURE_REPORT_GENERATOR_CLASS}
-     * @throws AllureReportBuilderException if can't find {@link #METHOD_NAME} method in class
+     *                                      AllureReportBuilderException if can't resolve {@link AllureArtifacts#getReportDataArtifact(String)} (String)}
+     *                                      using {@link #aether}
+     *                                      AllureReportBuilderException if resolved DependencyResult contains artifact with invalid path.
+     *                                      AllureReportBuilderException if can't find class {@link #ALLURE_REPORT_GENERATOR_CLASS} in classpath
+     *                                      AllureReportBuilderException if can't create instance of {@link #ALLURE_REPORT_GENERATOR_CLASS}
+     *                                      AllureReportBuilderException if can't find {@link #METHOD_NAME} method in class
      *                                      {@link #ALLURE_REPORT_GENERATOR_CLASS}
-     * @throws AllureReportBuilderException if can't invoke method {@link #METHOD_NAME}
+     *                                      AllureReportBuilderException if can't invoke method {@link #METHOD_NAME}
      */
     public void processResults(File... inputDirectories) throws AllureReportBuilderException {
         try {
             checkDirectories(inputDirectories);
 
             DefaultArtifact artifact = getReportDataArtifact(version);
-            DependencyResult dependencyResult = resolver.resolve(artifact);
-            URLClassLoader urlClassLoader = createClassLoader(dependencyResult);
+            URLClassLoader urlClassLoader = aether.resolve(artifact).getAsClassLoader(getClassLoader());
 
             Class<?> clazz = urlClassLoader.loadClass(ALLURE_REPORT_GENERATOR_CLASS);
             Object generator = clazz.getConstructor(File[].class).newInstance(new Object[]{inputDirectories});
@@ -137,19 +129,18 @@ public class AllureReportBuilder {
     }
 
     /**
-     * Unpack Allure report face to {@link #outputDirectory}
+     * Unpack report face to {@link #outputDirectory}.
      *
-     * @throws AllureReportBuilderException if can't resolve
-     *                                      {@link ru.yandex.qatools.allure.report.AllureArtifacts#getReportFaceArtifact(String)}
-     * @throws AllureReportBuilderException if some problems with
-     *                                      {@link ru.yandex.qatools.allure.report.utils.JarUtils#unpackJar(java.io.File,
-     *                                      java.io.File, ru.yandex.qatools.allure.report.utils.JarEntryFilter)}
+     * @throws AllureReportBuilderException if can't resolve report face artifact
+     *                                      if can't unpack report war to {@link #outputDirectory}
+     * @see ru.yandex.qatools.clay.utils.archive.ArchiveUtil#unpackJar(java.io.File, java.io.File,
+     * ru.yandex.qatools.clay.utils.archive.JarEntryFilter)
      */
     public void unpackFace() throws AllureReportBuilderException {
         try {
             DefaultArtifact artifact = AllureArtifacts.getReportFaceArtifact(version);
-            DependencyResult dependencyResult = resolver.resolve(artifact);
-            File allureReportFace = dependencyResult.getArtifactResults().get(0).getArtifact().getFile();
+            AetherResult aetherResult = aether.resolve(artifact);
+            File allureReportFace = aetherResult.get().get(0).getArtifact().getFile();
             unpackJar(allureReportFace, outputDirectory, filterByRegex(ALLURE_REPORT_FACE_FILE_REGEX));
         } catch (Exception e) {
             throw new AllureReportBuilderException(e);
@@ -181,24 +172,4 @@ public class AllureReportBuilder {
             throw new AllureReportBuilderException("Report directory doesn't exists and can't be created.");
         }
     }
-
-    /**
-     * Create a {@link URLClassLoader} for specified {@link DependencyResult}.
-     *
-     * @param dependencyResult a DependencyResult which contains extra classpath for class loader.
-     * @return created URLClassLoader
-     * @throws MalformedURLException if DependencyResult contains artifact with invalid path.
-     */
-    private URLClassLoader createClassLoader(DependencyResult dependencyResult) throws MalformedURLException {
-        List<URL> urls = new ArrayList<>();
-        for (ArtifactResult artRes : dependencyResult.getArtifactResults()) {
-            urls.add(artRes.getArtifact().getFile().toURI().toURL());
-        }
-
-        return new URLClassLoader(
-                urls.toArray(new URL[urls.size()]),
-                getClassLoader()
-        );
-    }
-
 }

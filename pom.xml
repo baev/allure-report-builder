@@ -20,6 +20,7 @@
         <aetherVersion>1.0.0.v20140518</aetherVersion>
         <mavenVersion>3.1.0</mavenVersion>
         <wagonVersion>2.6</wagonVersion>
+        <clay.version>2.1</clay.version>
     </properties>
 
     <organization>
@@ -79,56 +80,21 @@
             <version>2.4</version>
         </dependency>
 
-        <!-- AETHER -->
         <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-impl</artifactId>
-            <version>${aetherVersion}</version>
+            <groupId>ru.yandex.qatools.clay</groupId>
+            <artifactId>clay-aether</artifactId>
+            <version>${clay.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-spi</artifactId>
-            <version>${aetherVersion}</version>
+            <groupId>ru.yandex.qatools.clay</groupId>
+            <artifactId>clay-utils</artifactId>
+            <version>${clay.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-api</artifactId>
-            <version>${aetherVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-connector-basic</artifactId>
-            <version>${aetherVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-transport-file</artifactId>
-            <version>${aetherVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.aether</groupId>
-            <artifactId>aether-transport-http</artifactId>
-            <version>${aetherVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.tesla.maven</groupId>
-            <artifactId>maven-aether-provider</artifactId>
-            <version>${mavenVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-provider-api</artifactId>
-            <version>${wagonVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-file</artifactId>
-            <version>${wagonVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-http</artifactId>
-            <version>${wagonVersion}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.5</version>
         </dependency>
 
         <dependency>
