@@ -15,7 +15,7 @@ import static ru.yandex.qatools.clay.Aether.MAVEN_CENTRAL_URL;
 import static ru.yandex.qatools.clay.Aether.aether;
 import static ru.yandex.qatools.clay.maven.settings.FluentProfileBuilder.newProfile;
 import static ru.yandex.qatools.clay.maven.settings.FluentRepositoryBuilder.newRepository;
-import static ru.yandex.qatools.clay.maven.settings.FluentSettingsBuilder.newSettings;
+import static ru.yandex.qatools.clay.maven.settings.FluentSettingsBuilder.newSystemSettings;
 import static ru.yandex.qatools.clay.utils.archive.ArchiveUtil.unpackJar;
 
 /**
@@ -31,12 +31,6 @@ public class AllureReportBuilder {
     public static final String ALLURE_REPORT_FACE_FILE_REGEX = "^((?!(META\\-INF|WEB-INF)).)*$";
 
     public static final String METHOD_NAME = "generate";
-
-    public static final Settings MAVEN_SETTINGS = newSettings()
-            .withActiveProfile(newProfile()
-                    .withId("profile")
-                    .withRepository(newRepository()
-                            .withUrl(MAVEN_CENTRAL_URL))).build();
 
     private String version;
 
@@ -57,7 +51,20 @@ public class AllureReportBuilder {
     }
 
     public AllureReportBuilder(String version, File outputDirectory) throws AllureReportBuilderException {
-        this(version, outputDirectory, aether(getTempDirectory(), MAVEN_SETTINGS));
+        this(version, outputDirectory, aether(getTempDirectory(), mavenSettings()));
+    }
+    
+    public static Settings mavenSettings() throws AllureReportBuilderException {
+        try {
+            return newSystemSettings()
+                    .withActiveProfile(
+                            newProfile()
+                                    .withId("profile")
+                                    .withRepository(newRepository().withUrl(MAVEN_CENTRAL_URL))
+                    ).build();
+        } catch (Exception e) {
+            throw new AllureReportBuilderException(e);
+        }
     }
 
     /**
