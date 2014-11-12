@@ -20,7 +20,7 @@
         <aetherVersion>1.0.0.v20140518</aetherVersion>
         <mavenVersion>3.1.0</mavenVersion>
         <wagonVersion>2.6</wagonVersion>
-        <clay.version>2.1</clay.version>
+        <clay.version>2.2</clay.version>
     </properties>
 
     <organization>
