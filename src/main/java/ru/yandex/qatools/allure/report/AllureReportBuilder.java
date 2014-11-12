@@ -8,14 +8,13 @@ import ru.yandex.qatools.clay.AetherResult;
 import java.io.File;
 import java.net.URLClassLoader;
 
-import static org.apache.commons.io.FileUtils.getTempDirectory;
 import static ru.yandex.qatools.allure.report.AllureArtifacts.getReportDataArtifact;
 import static ru.yandex.qatools.allure.report.internal.RegexJarEntryFilter.filterByRegex;
 import static ru.yandex.qatools.clay.Aether.MAVEN_CENTRAL_URL;
 import static ru.yandex.qatools.clay.Aether.aether;
 import static ru.yandex.qatools.clay.maven.settings.FluentProfileBuilder.newProfile;
 import static ru.yandex.qatools.clay.maven.settings.FluentRepositoryBuilder.newRepository;
-import static ru.yandex.qatools.clay.maven.settings.FluentSettingsBuilder.newSystemSettings;
+import static ru.yandex.qatools.clay.maven.settings.FluentSettingsBuilder.loadSettings;
 import static ru.yandex.qatools.clay.utils.archive.ArchiveUtil.unpackJar;
 
 /**
@@ -51,12 +50,12 @@ public class AllureReportBuilder {
     }
 
     public AllureReportBuilder(String version, File outputDirectory) throws AllureReportBuilderException {
-        this(version, outputDirectory, aether(getTempDirectory(), mavenSettings()));
+        this(version, outputDirectory, aether(mavenSettings()));
     }
-    
+
     public static Settings mavenSettings() throws AllureReportBuilderException {
         try {
-            return newSystemSettings()
+            return loadSettings()
                     .withActiveProfile(
                             newProfile()
                                     .withId("profile")
