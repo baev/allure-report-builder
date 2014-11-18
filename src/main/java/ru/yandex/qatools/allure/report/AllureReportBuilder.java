@@ -58,7 +58,7 @@ public class AllureReportBuilder {
             return loadSettings()
                     .withActiveProfile(
                             newProfile()
-                                    .withId("profile")
+                                    .withId("allure")
                                     .withRepository(newRepository().withUrl(MAVEN_CENTRAL_URL))
                     ).build();
         } catch (Exception e) {
