@@ -1,12 +1,21 @@
 package ru.yandex.qatools.allure.report;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.settings.Settings;
+import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.clay.Aether;
 import ru.yandex.qatools.clay.AetherResult;
 
 import java.io.File;
+import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Arrays;
+import java.util.List;
 
 import static ru.yandex.qatools.allure.report.AllureArtifacts.getReportDataArtifact;
 import static ru.yandex.qatools.allure.report.internal.RegexJarEntryFilter.filterByRegex;
@@ -31,6 +40,8 @@ public class AllureReportBuilder {
 
     public static final String METHOD_NAME = "generate";
 
+    private static final Logger log = LoggerFactory.getLogger(AllureReportBuilder.class);
+
     private String version;
 
     private File outputDirectory;
@@ -38,6 +49,8 @@ public class AllureReportBuilder {
     private ClassLoader classLoader;
 
     private Aether aether;
+
+    private List<Artifact> extensions = Lists.newArrayList();
 
     public AllureReportBuilder(String version, File outputDirectory, Aether aether)
             throws AllureReportBuilderException {
@@ -106,6 +119,33 @@ public class AllureReportBuilder {
     }
 
     /**
+     * Set extension artifacts in Aether format ({@code <groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>}).
+     * Multiple dependencies are allowed with ';' as separator.
+     *
+     * @param extensions artifact GAV
+     */
+    public void setExtensions(String extensions) {
+        if (StringUtils.isEmpty(extensions)) {
+            // ignore
+            return;
+        }
+
+        log.info(String.format("Found Allure extensions parameter: '%s'", extensions));
+        String[] artifacts = extensions.split(";");
+        for (String artifactCoordinates : artifacts) {
+            if (!StringUtils.isEmpty(artifactCoordinates)) {
+                this.extensions.add(new DefaultArtifact(artifactCoordinates));
+                log.info(String.format("Allure extension %s added", artifactCoordinates));
+            }
+        }
+    }
+
+    @VisibleForTesting
+    protected List<Artifact> getExtensions() {
+        return extensions;
+    }
+
+    /**
      * Process test results in given directories. Generates report data to {@link #outputDirectory}.
      *
      * @param inputDirectories a directories with test results
@@ -124,7 +164,11 @@ public class AllureReportBuilder {
             checkDirectories(inputDirectories);
 
             DefaultArtifact artifact = getReportDataArtifact(version);
-            URLClassLoader urlClassLoader = aether.resolve(artifact).getAsClassLoader(getClassLoader());
+            List<URL> urls = Arrays.asList(aether.resolve(artifact).getAsUrls());
+            for (Artifact extension : extensions) {
+                urls.addAll(Arrays.asList(aether.resolve(extension).getAsUrls()));
+            }
+            URLClassLoader urlClassLoader = new URLClassLoader(urls.toArray(new URL[urls.size()]), getClassLoader());
 
             Class<?> clazz = urlClassLoader.loadClass(ALLURE_REPORT_GENERATOR_CLASS);
             Object generator = clazz.getConstructor(File[].class).newInstance(new Object[]{inputDirectories});
