@@ -1,6 +1,5 @@
 package ru.yandex.qatools.allure.report;
 
-import org.eclipse.aether.artifact.Artifact;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
@@ -14,9 +13,8 @@ import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
 import static ru.yandex.qatools.allure.report.AllureReportBuilderTest.NotEmptyArrayMatcher.notEmpty;
 
@@ -77,26 +75,24 @@ public class AllureReportBuilderTest {
     }
 
     @Test
-    public void setExtensionsInvalid() {
-        builder.setExtensions(null);
-        assertEquals(0, builder.getExtensions().size());
+    public void addExtensionInvalid() {
+        builder.addExtension(null);
+        assertThat(builder.getExtensions(), hasSize(0));
 
-        builder.setExtensions("");
-        assertEquals(0, builder.getExtensions().size());
+        builder.addExtension("");
+        assertThat(builder.getExtensions(), hasSize(0));
     }
 
     @Test
-    public void setSingleExtension() {
-        builder.setExtensions("group:artifact:version");
-        List<Artifact> extensions = builder.getExtensions();
-        assertEquals(1, extensions.size());
+    public void addSingleExtension() {
+        builder.addExtension("group:artifact:version");
+        assertThat(builder.getExtensions(), hasSize(1));
     }
 
     @Test
-    public void setMultipleExtensions() {
-        builder.setExtensions("group1:artifact1:version1;group2:artifact2:jar:version2;group3:artifact3:jar:jdk5:version3");
-        List<Artifact> extensions = builder.getExtensions();
-        assertEquals(3, extensions.size());
+    public void addMultipleExtensions() {
+        builder.addExtensions("group1:artifact1:version1", "group2:artifact2:jar:version2", "group3:artifact3:jar:jdk5:version3");
+        assertThat(builder.getExtensions(), hasSize(3));
     }
 
     public static class NotEmptyArrayMatcher extends TypeSafeMatcher<String[]> {

@@ -2,6 +2,7 @@ package ru.yandex.qatools.allure.report;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.settings.Settings;
 import org.eclipse.aether.artifact.Artifact;
@@ -16,6 +17,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static ru.yandex.qatools.allure.report.AllureArtifacts.getReportDataArtifact;
 import static ru.yandex.qatools.allure.report.internal.RegexJarEntryFilter.filterByRegex;
@@ -119,24 +121,27 @@ public class AllureReportBuilder {
     }
 
     /**
-     * Set extension artifacts in Aether format ({@code <groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>}).
-     * Multiple dependencies are allowed with ';' as separator.
+     * Set extension artifacts in Aether format
+     * ({@code <groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>}).
      *
-     * @param extensions artifact GAV
+     * @param extensions extension GAVs
      */
-    public void setExtensions(String extensions) {
-        if (StringUtils.isEmpty(extensions)) {
-            // ignore
-            return;
+    public void addExtensions(String... extensions) {
+        for (String extension : extensions) {
+            addExtension(extension);
         }
+    }
 
-        log.info(String.format("Found Allure extensions parameter: '%s'", extensions));
-        String[] artifacts = extensions.split(";");
-        for (String artifactCoordinates : artifacts) {
-            if (!StringUtils.isEmpty(artifactCoordinates)) {
-                this.extensions.add(new DefaultArtifact(artifactCoordinates));
-                log.info(String.format("Allure extension %s added", artifactCoordinates));
-            }
+    /**
+     * Set extension artifact in Aether format
+     * ({@code <groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>}).
+     *
+     * @param extension extension GAV
+     */
+    public void addExtension(String extension) {
+        if (!StringUtils.isEmpty(extension)) {
+            this.extensions.add(new DefaultArtifact(extension));
+            log.info(String.format("Allure extension %s added", extension));
         }
     }
 
@@ -164,7 +169,7 @@ public class AllureReportBuilder {
             checkDirectories(inputDirectories);
 
             DefaultArtifact artifact = getReportDataArtifact(version);
-            List<URL> urls = Arrays.asList(aether.resolve(artifact).getAsUrls());
+            Set<URL> urls = Sets.newHashSet(Arrays.asList(aether.resolve(artifact).getAsUrls()));
             for (Artifact extension : extensions) {
                 urls.addAll(Arrays.asList(aether.resolve(extension).getAsUrls()));
             }
