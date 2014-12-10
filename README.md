@@ -1,6 +1,7 @@
 ## Allure Report Builder
 
 [![release](http://github-release-version.herokuapp.com/github/allure-framework/allure-report-builder/release.svg?style=flat)](https://github.com/allure-framework/allure-report-builder/releases/latest) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/ru.yandex.qatools.allure/allure-report-builder/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/ru.yandex.qatools.allure/allure-report-builder)
+[![build](https://img.shields.io/teamcity/http/teamcity.qatools.ru/s/allure_report_builder_master_deploy.svg?style=flat)](http://teamcity.qatools.ru/viewType.html?buildTypeId=allure_report_builder_master_deploy&guest=1)
 
 **Warning: this is an internal Allure component not intended for direct usage. Please refer to [documentation](https://github.com/allure-framework/allure-core/wiki) for details on how to use Allure.**
 
