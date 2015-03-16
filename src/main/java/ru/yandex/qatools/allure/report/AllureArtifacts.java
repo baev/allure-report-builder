@@ -2,8 +2,6 @@ package ru.yandex.qatools.allure.report;
 
 import org.eclipse.aether.artifact.DefaultArtifact;
 
-import java.io.File;
-
 /**
  * eroshenkoam
  * 5/29/14
@@ -19,6 +17,9 @@ public class AllureArtifacts {
     public static final String WAR = "war";
 
     public static final String JAR = "jar";
+
+    private AllureArtifacts() {
+    }
 
     public static DefaultArtifact getReportDataArtifact(String version) {
         return new DefaultArtifact(ALLURE_GROUP_ID, ALLURE_REPORT_DATA_ARTIFACT_ID, JAR, version);
