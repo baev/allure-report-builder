@@ -14,7 +14,8 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.*;
 import static ru.yandex.qatools.allure.report.AllureReportBuilderTest.NotEmptyArrayMatcher.notEmpty;
 
 /**
@@ -71,6 +72,27 @@ public class AllureReportBuilderTest {
     public void unpackFaceTest() throws Exception {
         builder.unpackFace();
         assertThat(reportDirectory.list(), notEmpty());
+    }
+
+    @Test
+    public void addExtensionInvalid() {
+        builder.addExtension(null);
+        assertThat(builder.getExtensions(), hasSize(0));
+
+        builder.addExtension("");
+        assertThat(builder.getExtensions(), hasSize(0));
+    }
+
+    @Test
+    public void addSingleExtension() {
+        builder.addExtension("group:artifact:version");
+        assertThat(builder.getExtensions(), hasSize(1));
+    }
+
+    @Test
+    public void addMultipleExtensions() {
+        builder.addExtensions("group1:artifact1:version1", "group2:artifact2:jar:version2", "group3:artifact3:jar:jdk5:version3");
+        assertThat(builder.getExtensions(), hasSize(3));
     }
 
     public static class NotEmptyArrayMatcher extends TypeSafeMatcher<String[]> {
