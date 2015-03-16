@@ -25,6 +25,8 @@ import static ru.yandex.qatools.clay.utils.archive.ArchiveUtil.unpackJar;
  */
 public class AllureReportBuilder {
 
+    public static final String DEFAULT_ALLURE_REPORT_VERSION = "RELEASE";
+
     public static final String ALLURE_REPORT_GENERATOR_CLASS = "ru.yandex.qatools.allure.data.AllureReportGenerator";
 
     public static final String ALLURE_REPORT_FACE_FILE_REGEX = "^((?!(META\\-INF|WEB-INF)).)*$";
@@ -51,6 +53,10 @@ public class AllureReportBuilder {
 
     public AllureReportBuilder(String version, File outputDirectory) throws AllureReportBuilderException {
         this(version, outputDirectory, aether(mavenSettings()));
+    }
+
+    public AllureReportBuilder(File outputDirectory) throws AllureReportBuilderException {
+        this(DEFAULT_ALLURE_REPORT_VERSION, outputDirectory);
     }
 
     public static Settings mavenSettings() throws AllureReportBuilderException {

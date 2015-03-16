@@ -45,7 +45,8 @@ public class AllureReportBuilderTest {
                 new Object[]{"1.3.9"},
                 new Object[]{"1.3.7"},
                 new Object[]{"1.4.0.RC3"},
-                new Object[]{"1.4.0.RC4"}
+                new Object[]{"1.4.0.RC4"},
+                new Object[]{AllureReportBuilder.DEFAULT_ALLURE_REPORT_VERSION}
         );
     }
 
@@ -63,7 +64,6 @@ public class AllureReportBuilderTest {
     @Test
     public void processResultsTest() throws Exception {
         builder.processResults(new File(allureResults.toURI()));
-        builder.unpackFace();
         assertThat(reportDirectory.list(), notEmpty());
     }
 
