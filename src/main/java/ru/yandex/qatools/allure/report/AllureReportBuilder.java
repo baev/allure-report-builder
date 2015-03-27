@@ -46,7 +46,7 @@ public class AllureReportBuilder {
 
     public static final String METHOD_NAME = "generate";
 
-    private static final Logger log = LoggerFactory.getLogger(AllureReportBuilder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AllureReportBuilder.class);
 
     private String version;
 
@@ -150,7 +150,7 @@ public class AllureReportBuilder {
     public void addExtension(String extension) {
         if (!StringUtils.isEmpty(extension)) {
             this.extensions.add(new DefaultArtifact(extension));
-            log.info(String.format("Allure extension %s added", extension));
+            LOGGER.info(String.format("Allure extension %s added", extension));
         }
     }
 
