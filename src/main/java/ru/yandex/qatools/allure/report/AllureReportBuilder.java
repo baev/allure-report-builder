@@ -37,6 +37,8 @@ import static ru.yandex.qatools.clay.utils.archive.ArchiveUtil.unpackJar;
 public class AllureReportBuilder {
 
     public static final String DEFAULT_ALLURE_REPORT_VERSION = "RELEASE";
+    
+    public static final String OSS_SONATYPE_RELEASES = "https://oss.sonatype.org/content/repositories/releases/";
 
     public static final String ALLURE_REPORT_GENERATOR_CLASS = "ru.yandex.qatools.allure.data.AllureReportGenerator";
 
@@ -80,6 +82,7 @@ public class AllureReportBuilder {
                     .withActiveProfile(
                             newProfile()
                                     .withId("allure")
+                                    .withRepository(newRepository().withUrl(OSS_SONATYPE_RELEASES))
                                     .withRepository(newRepository().withUrl(MAVEN_CENTRAL_URL))
                     ).build();
         } catch (Exception e) {
